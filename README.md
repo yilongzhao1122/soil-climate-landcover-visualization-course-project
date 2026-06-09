@@ -1,4 +1,4 @@
-# Global Soil Carbon, Nitrogen and Climate-Land Cover Visualization
+﻿# Global Soil Carbon, Nitrogen and Climate-Land Cover Visualization
 
 ## 全球土壤碳氮与气候-土地覆盖可视化项目
 
@@ -99,7 +99,7 @@ No package installation is required to view the static dashboard beyond a local 
 
 ## Authors
 
-- 赵一龙 / Yilong Zhao
+- 赵艺隆 / Yilong Zhao
 - 程楷倢 / Kaijie Cheng
 - 韦彦浩 / Yanhao Wei
 
@@ -110,3 +110,4 @@ Code in this repository is released under the MIT License. Original documentatio
 ## Acknowledgements
 
 This project uses public global environmental datasets from SoilGrids, WorldClim, Koppen-Geiger climate classification resources, MODIS land-cover products, and Natural Earth boundaries. It was prepared as a data visualization course group project.
+
