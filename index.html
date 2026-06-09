@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Integrated SOC-TN Visualization Dashboard</title>
-    <link rel="stylesheet" href="./src/integrated_dashboard.css?v=20260610-region-filter" />
+    <link rel="stylesheet" href="./src/integrated_dashboard.css?v=20260610-region-restore" />
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   </head>
   <body>
@@ -46,6 +46,27 @@
           </label>
 
           <button id="resetFilters" class="secondary-button" type="button">Reset filters</button>
+        </section>
+
+        <section class="control-section">
+          <h2>Region comparison</h2>
+          <p class="control-note">Region filter uses grid-cell center coordinates and works together with climate, land-cover, coupling-class, and valid-cell filters.</p>
+          <div class="region-grid">
+            <label class="field-label" for="lonMin">Lon min</label>
+            <input id="lonMin" type="number" min="-180" max="180" step="0.1" placeholder="-180" />
+            <label class="field-label" for="lonMax">Lon max</label>
+            <input id="lonMax" type="number" min="-180" max="180" step="0.1" placeholder="180" />
+            <label class="field-label" for="latMin">Lat min</label>
+            <input id="latMin" type="number" min="-90" max="90" step="0.1" placeholder="-90" />
+            <label class="field-label" for="latMax">Lat max</label>
+            <input id="latMax" type="number" min="-90" max="90" step="0.1" placeholder="90" />
+          </div>
+          <div class="button-row">
+            <button id="applyRegion" class="secondary-button" type="button">Apply region</button>
+            <button id="clearRegion" class="secondary-button" type="button">Clear region</button>
+          </div>
+          <p id="regionStatus" class="control-note">Region: Global</p>
+          <p id="regionError" class="error-note" hidden></p>
         </section>
 
         <section class="control-section panel-controls" data-controls="spatial">
@@ -146,14 +167,16 @@
         </header>
 
         <section id="spatialPanel" class="view-panel">
+          <div id="mapRegionStatus" class="map-region-status">Region: Global</div>
           <div class="map-stage">
             <div id="mapZoomControls" class="map-zoom-controls" aria-label="Map zoom controls">
               <button id="zoomIn" type="button" title="Zoom in">+</button>
               <button id="zoomOut" type="button" title="Zoom out">-</button>
+              <button id="zoomToRegion" type="button" disabled>Zoom to region</button>
               <button id="resetZoom" type="button">Reset zoom</button>
             </div>
             <canvas id="mapCanvas"></canvas>
-            <svg id="mapSvg" aria-hidden="true"><g id="countryLayer"></g></svg>
+            <svg id="mapSvg" aria-hidden="true"><g id="countryLayer"></g><g id="bboxLayer"></g></svg>
             <div id="mapLoading" class="loading-state">Loading map...</div>
           </div>
           <div id="mapLegend" class="legend"></div>
@@ -182,7 +205,7 @@
     </div>
 
     <div id="tooltip" class="tooltip" hidden></div>
-    <script src="./src/integrated_dashboard.js?v=20260610-region-filter"></script>
+    <script src="./src/integrated_dashboard.js?v=20260610-region-restore"></script>
   </body>
 </html>
 

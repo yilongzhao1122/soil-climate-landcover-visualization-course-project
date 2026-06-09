@@ -92,6 +92,15 @@ const dom = {
   couplingFilter: document.querySelector("#couplingFilter"),
   validOnly: document.querySelector("#validOnly"),
   resetFilters: document.querySelector("#resetFilters"),
+  lonMin: document.querySelector("#lonMin"),
+  lonMax: document.querySelector("#lonMax"),
+  latMin: document.querySelector("#latMin"),
+  latMax: document.querySelector("#latMax"),
+  applyRegion: document.querySelector("#applyRegion"),
+  clearRegion: document.querySelector("#clearRegion"),
+  regionStatus: document.querySelector("#regionStatus"),
+  mapRegionStatus: document.querySelector("#mapRegionStatus"),
+  regionError: document.querySelector("#regionError"),
   mapMetric: document.querySelector("#mapMetric"),
   scatterMode: document.querySelector("#scatterMode"),
   scatterColor: document.querySelector("#scatterColor"),
@@ -110,10 +119,12 @@ const dom = {
   mapCanvas: document.querySelector("#mapCanvas"),
   mapSvg: d3.select("#mapSvg"),
   countryLayer: d3.select("#countryLayer"),
+  bboxLayer: d3.select("#bboxLayer"),
   mapLoading: document.querySelector("#mapLoading"),
   mapLegend: document.querySelector("#mapLegend"),
   zoomIn: document.querySelector("#zoomIn"),
   zoomOut: document.querySelector("#zoomOut"),
+  zoomToRegion: document.querySelector("#zoomToRegion"),
   resetZoom: document.querySelector("#resetZoom"),
   scatterChart: document.querySelector("#scatterChart"),
   scatterLegend: document.querySelector("#scatterLegend"),
@@ -145,6 +156,7 @@ const state = {
   height: 0,
   projection: d3.geoNaturalEarth1(),
   mapTransform: d3.zoomIdentity,
+  region: null,
 };
 
 const mapCtx = dom.mapCanvas.getContext("2d");
@@ -243,10 +255,13 @@ function initEvents() {
   dom.mapStage.addEventListener("pointerleave", hideTooltip);
   dom.mapStage.addEventListener("click", pinMapCell);
   dom.resetFilters.addEventListener("click", resetFilters);
+  dom.applyRegion.addEventListener("click", applyRegion);
+  dom.clearRegion.addEventListener("click", clearRegion);
   dom.zoomIn.addEventListener("click", () => d3.select(dom.mapStage).transition().duration(160).call(zoomBehavior.scaleBy, 1.35));
   dom.zoomOut.addEventListener("click", () => d3.select(dom.mapStage).transition().duration(160).call(zoomBehavior.scaleBy, 0.75));
+  dom.zoomToRegion.addEventListener("click", zoomToRegion);
   dom.resetZoom.addEventListener("click", resetMapZoom);
-  [dom.zoomIn, dom.zoomOut, dom.resetZoom].forEach((button) => {
+  [dom.zoomIn, dom.zoomOut, dom.zoomToRegion, dom.resetZoom].forEach((button) => {
     button.addEventListener("pointerdown", (event) => event.stopPropagation());
     button.addEventListener("click", (event) => event.stopPropagation());
   });
@@ -313,6 +328,7 @@ function render() {
     section.hidden = section.dataset.controls !== category;
   });
   state.filtered = getFilteredRows();
+  renderRegionStatus();
   renderSummary();
   renderDetailPanel();
   renderHeader(category);
@@ -326,6 +342,7 @@ function resetFilters() {
   dom.validOnly.checked = true;
   if (dom.axisRange) dom.axisRange.value = "robust";
   if (dom.heatMetric) dom.heatMetric.value = "weighted_mean_cn_ratio";
+  clearRegionInputs();
   state.selectedCell = null;
   render();
 }
@@ -346,6 +363,7 @@ function getFilteredRows() {
     if (dom.climateFilter.value !== "all" && row.climate_zone !== dom.climateFilter.value) return false;
     if (dom.landcoverFilter.value !== "all" && row.landcover_major !== dom.landcoverFilter.value) return false;
     if (dom.couplingFilter.value !== "all" && row.coupling_class !== dom.couplingFilter.value) return false;
+    if (state.region && !rowInRegion(row, state.region)) return false;
     return true;
   });
 }
@@ -372,16 +390,18 @@ function renderSummary() {
     dom.summaryPanel.innerHTML = `
       <div class="summary-stat"><span>Grid cells</span><strong>0</strong></div>
       <div class="summary-note">${summaryEmptyMessage(totalFiltered)}</div>
+      ${state.region && !state.filtered.length ? `<div class="summary-note">No grid cells fall within the selected region.</div>` : ""}
     `;
     return;
   }
-  dom.summaryPanel.innerHTML = `
+  const baseSummary = `
     <div class="summary-stat"><span>Grid cells</span><strong>${formatCount(rows.length)}</strong></div>
     <div class="summary-stat"><span>Mean SOC</span><strong>${formatNumber(d3.mean(rows, (row) => row.soc_gkg))} g/kg</strong></div>
     <div class="summary-stat"><span>Mean TN</span><strong>${formatNumber(d3.mean(rows, (row) => row.tn_gkg))} g/kg</strong></div>
     <div class="summary-stat"><span>Mean C:N</span><strong>${formatNumber(d3.mean(rows, (row) => row.cn_ratio))}</strong></div>
     <div class="summary-note">${summaryScopeNote(isSpatial, rows.length, totalFiltered)}</div>
   `;
+  dom.summaryPanel.innerHTML = state.region ? `${baseSummary}${regionComparisonHtml(state.filtered)}` : baseSummary;
 }
 
 function getSummaryRows() {
@@ -427,6 +447,7 @@ function resizeMap() {
   );
   const path = d3.geoPath(state.projection);
   dom.countryLayer.selectAll("path").data(state.world.features).join("path").attr("d", path);
+  drawBbox();
   for (const row of state.grid) {
     const point = state.projection([row.lon, row.lat]);
     row.px = point ? point[0] : NaN;
@@ -441,11 +462,13 @@ function renderMap() {
   mapCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   mapCtx.clearRect(0, 0, state.width, state.height);
   dom.countryLayer.attr("transform", state.mapTransform.toString());
+  dom.bboxLayer.attr("transform", state.mapTransform.toString());
   if (!rows.length) {
     state.mapPointTree = null;
     dom.mapLoading.textContent = emptyMessage();
     dom.mapLoading.classList.remove("is-hidden");
     dom.mapLegend.innerHTML = "";
+    drawBbox();
     return;
   }
   dom.mapLoading.classList.add("is-hidden");
@@ -467,6 +490,7 @@ function renderMap() {
     .y((row) => state.mapTransform.applyY(row.py))
     .addAll(rows.filter((row) => Number.isFinite(row.px) && Number.isFinite(row.py)));
   renderMapLegend(metric, rows, color);
+  drawBbox();
   renderSummary();
 }
 
@@ -528,6 +552,196 @@ function pinMapCell(event) {
 
 function resetMapZoom() {
   d3.select(dom.mapStage).transition().duration(180).call(zoomBehavior.transform, d3.zoomIdentity);
+}
+
+function zoomToRegion() {
+  if (!state.region || !state.projection || !state.width || !state.height) return;
+  const points = bboxCoordinates(state.region)
+    .map((coord) => state.projection(coord))
+    .filter((point) => point && Number.isFinite(point[0]) && Number.isFinite(point[1]));
+  if (!points.length) return;
+  const xExtent = d3.extent(points, (point) => point[0]);
+  const yExtent = d3.extent(points, (point) => point[1]);
+  const dx = Math.max(1, xExtent[1] - xExtent[0]);
+  const dy = Math.max(1, yExtent[1] - yExtent[0]);
+  const padding = 48;
+  const scale = Math.max(1, Math.min(8, 0.92 * Math.min((state.width - padding * 2) / dx, (state.height - padding * 2) / dy)));
+  const cx = (xExtent[0] + xExtent[1]) / 2;
+  const cy = (yExtent[0] + yExtent[1]) / 2;
+  const transform = d3.zoomIdentity.translate(state.width / 2 - scale * cx, state.height / 2 - scale * cy).scale(scale);
+  d3.select(dom.mapStage).transition().duration(260).call(zoomBehavior.transform, transform);
+}
+
+function applyRegion() {
+  const parsed = parseRegionInputs();
+  if (!parsed.ok) {
+    showRegionError(parsed.message);
+    return;
+  }
+  state.region = parsed.region;
+  hideRegionError();
+  state.selectedCell = null;
+  render();
+}
+
+function clearRegion() {
+  clearRegionInputs();
+  state.selectedCell = null;
+  render();
+}
+
+function clearRegionInputs() {
+  state.region = null;
+  [dom.lonMin, dom.lonMax, dom.latMin, dom.latMax].forEach((input) => {
+    input.value = "";
+  });
+  hideRegionError();
+}
+
+function parseRegionInputs() {
+  const raw = {
+    lonMin: dom.lonMin.value.trim(),
+    lonMax: dom.lonMax.value.trim(),
+    latMin: dom.latMin.value.trim(),
+    latMax: dom.latMax.value.trim(),
+  };
+  if (Object.values(raw).some((value) => value === "")) {
+    return { ok: false, message: "Please enter lon min, lon max, lat min, and lat max." };
+  }
+  const region = Object.fromEntries(Object.entries(raw).map(([key, value]) => [key, Number(value)]));
+  if (Object.values(region).some((value) => !Number.isFinite(value))) {
+    return { ok: false, message: "Region bounds must be numeric." };
+  }
+  if (region.lonMin < -180 || region.lonMax > 180) return { ok: false, message: "Longitude bounds must be between -180 and 180." };
+  if (region.latMin < -90 || region.latMax > 90) return { ok: false, message: "Latitude bounds must be between -90 and 90." };
+  if (region.lonMin > region.lonMax) return { ok: false, message: "Lon min must be less than or equal to lon max." };
+  if (region.latMin > region.latMax) return { ok: false, message: "Lat min must be less than or equal to lat max." };
+  return { ok: true, region };
+}
+
+function rowInRegion(row, region) {
+  return row.lon >= region.lonMin && row.lon <= region.lonMax && row.lat >= region.latMin && row.lat <= region.latMax;
+}
+
+function renderRegionStatus() {
+  const hasRegion = Boolean(state.region);
+  dom.zoomToRegion.disabled = !hasRegion;
+  if (!state.region) {
+    dom.regionStatus.textContent = "Region: Global";
+    dom.mapRegionStatus.textContent = "Region: Global";
+    return;
+  }
+  const status = `Selected region: Lon [${formatNumber(state.region.lonMin)}, ${formatNumber(state.region.lonMax)}], Lat [${formatNumber(state.region.latMin)}, ${formatNumber(state.region.latMax)}]`;
+  dom.regionStatus.textContent = status;
+  dom.mapRegionStatus.textContent = status;
+}
+
+function showRegionError(message) {
+  dom.regionError.textContent = message;
+  dom.regionError.hidden = false;
+}
+
+function hideRegionError() {
+  dom.regionError.textContent = "";
+  dom.regionError.hidden = true;
+}
+
+function drawBbox() {
+  if (!state.region || !state.projection) {
+    dom.bboxLayer.selectAll("path").remove();
+    return;
+  }
+  const bboxGeo = {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: bboxCoordinates(state.region),
+    },
+  };
+  const path = d3.geoPath(state.projection);
+  dom.bboxLayer.selectAll("path").data([bboxGeo]).join("path").attr("class", "bbox-region").attr("d", path);
+}
+
+function bboxCoordinates(region) {
+  const { lonMin, lonMax, latMin, latMax } = region;
+  const step = Math.max(0.5, Math.min(2, Math.min(Math.abs(lonMax - lonMin), Math.abs(latMax - latMin)) / 8 || 1));
+  const coords = [];
+  for (let lon = lonMin; lon <= lonMax; lon += step) coords.push([Math.min(lon, lonMax), latMin]);
+  for (let lat = latMin + step; lat <= latMax; lat += step) coords.push([lonMax, Math.min(lat, latMax)]);
+  for (let lon = lonMax - step; lon >= lonMin; lon -= step) coords.push([Math.max(lon, lonMin), latMax]);
+  for (let lat = latMax - step; lat >= latMin; lat -= step) coords.push([lonMin, Math.max(lat, latMin)]);
+  coords.push([lonMin, latMin]);
+  return coords;
+}
+
+function regionComparisonHtml(regionRows) {
+  const globalRows = state.grid.filter((row) => row.valid_flag === 1);
+  const regionStats = weightedStats(regionRows);
+  const globalStats = weightedStats(globalRows);
+  return `
+    <div class="region-comparison">
+      <div class="summary-note">${dom.regionStatus.textContent} Global baseline uses all valid global grid cells and is not affected by climate, land-cover, coupling, or region filters.</div>
+      ${comparisonTable(regionStats, globalStats)}
+      <div class="comparison-grid">
+        ${categoryBlock("Selected region dominant classes", regionStats)}
+        ${categoryBlock("Global baseline dominant classes", globalStats)}
+      </div>
+    </div>
+  `;
+}
+
+function categoryBlock(title, stats) {
+  return `
+    <div class="comparison-card">
+      <strong>${title}</strong>
+      <span>Climate: ${labelCategory(stats.climate)}</span>
+      <span>Land cover: ${labelCategory(stats.landcover)}</span>
+      <span>Coupling: ${labelCategory(stats.coupling)}</span>
+    </div>
+  `;
+}
+
+function comparisonTable(regionStats, globalStats) {
+  return `
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Metric</th><th>Selected region</th><th>Global baseline</th><th>Difference</th></tr>
+      </thead>
+      <tbody>
+        ${comparisonRow("Grid cells", regionStats.n, globalStats.n, "", true)}
+        ${comparisonRow("Mean SOC", regionStats.soc, globalStats.soc, "g/kg")}
+        ${comparisonRow("Mean TN", regionStats.tn, globalStats.tn, "g/kg")}
+        ${comparisonRow("Mean C:N", regionStats.cn, globalStats.cn, "")}
+      </tbody>
+    </table>
+  `;
+}
+
+function comparisonRow(label, selected, baseline, unit, count = false) {
+  const diff = selected - baseline;
+  const pct = Number.isFinite(baseline) && baseline !== 0 ? diff / baseline : NaN;
+  const valueFormat = count ? formatCount : formatNumber;
+  const diffValue = count ? d3.format("+,")(diff || 0) : formatSigned(diff);
+  return `
+    <tr>
+      <td>${label}</td>
+      <td>${valueFormat(selected)}${unit ? ` ${unit}` : ""}</td>
+      <td>${valueFormat(baseline)}${unit ? ` ${unit}` : ""}</td>
+      <td>${diffValue}${unit ? ` ${unit}` : ""} (${formatSignedPercent(pct)})</td>
+    </tr>
+  `;
+}
+
+function weightedStats(rows) {
+  return {
+    n: rows.length,
+    soc: weightedMean(rows, "soc_gkg"),
+    tn: weightedMean(rows, "tn_gkg"),
+    cn: weightedMean(rows, "cn_ratio"),
+    climate: dominantValue(rows, "climate_zone"),
+    landcover: dominantValue(rows, "landcover_major"),
+    coupling: dominantValue(rows, "coupling_class"),
+  };
 }
 
 function renderScatter() {
@@ -745,14 +959,15 @@ function renderHeatmap() {
 }
 
 function renderHierarchy() {
-  if (!state.hierarchy) {
+  const hierarchyData = buildFilteredHierarchy();
+  if (!hierarchyData) {
     renderEmptyChart(dom.hierarchyChart, "Hierarchy data are not available.");
     dom.hierarchyLegend.innerHTML = "";
     return;
   }
   const { width, height, svg } = resetSvg(dom.hierarchyChart);
   const root = d3
-    .hierarchy(state.hierarchy)
+    .hierarchy(hierarchyData)
     .sum((node) => Number(node.value) || 0)
     .sort((a, b) => d3.descending(a.value, b.value));
   d3.partition().size([width, height])(root);
@@ -828,8 +1043,25 @@ function getRowsForHeatmapProportion() {
     if (dom.validOnly.checked && row.valid_flag !== 1) return false;
     if (dom.climateFilter.value !== "all" && row.climate_zone !== dom.climateFilter.value) return false;
     if (dom.landcoverFilter.value !== "all" && row.landcover_major !== dom.landcoverFilter.value) return false;
+    if (state.region && !rowInRegion(row, state.region)) return false;
     return true;
   });
+}
+
+function buildFilteredHierarchy() {
+  const rows = state.filtered;
+  if (!rows.length) return null;
+  const climateChildren = d3.groups(rows, (row) => row.climate_zone).map(([climate, climateRows]) => ({
+    name: climate,
+    children: d3.groups(climateRows, (row) => row.landcover_major).map(([landcover, landRows]) => ({
+      name: landcover,
+      children: d3.groups(landRows, (row) => row.coupling_class).map(([coupling, couplingRows]) => ({
+        name: coupling,
+        value: d3.sum(couplingRows, rowWeight),
+      })),
+    })),
+  }));
+  return { name: "Global", children: climateChildren };
 }
 
 function applyHeatmapFilter(row) {
@@ -1131,6 +1363,14 @@ function formatCount(value) {
 
 function formatPercent(value) {
   return Number.isFinite(value) ? d3.format(".1%")(value) : "NA";
+}
+
+function formatSigned(value) {
+  return Number.isFinite(value) ? d3.format("+.3~f")(value) : "NA";
+}
+
+function formatSignedPercent(value) {
+  return Number.isFinite(value) ? d3.format("+.1%")(value) : "NA";
 }
 
 function debounce(fn, wait) {

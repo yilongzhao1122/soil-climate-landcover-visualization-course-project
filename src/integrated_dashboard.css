@@ -177,6 +177,16 @@ select {
   width: 100%;
 }
 
+input[type="number"] {
+  background: #fbfcfa;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  min-height: 38px;
+  padding: 7px 10px;
+  width: 100%;
+}
+
 .secondary-button {
   background: #eef5f3;
   color: var(--accent-strong);
@@ -188,6 +198,30 @@ select {
 
 .secondary-button:hover {
   background: #e1eeeb;
+}
+
+.button-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 12px;
+}
+
+.button-row .secondary-button {
+  margin-top: 0;
+}
+
+.region-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.error-note {
+  color: #a33a2b;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 8px 0 0;
 }
 
 .check-row {
@@ -235,6 +269,7 @@ select {
 
 .map-zoom-controls {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   position: absolute;
   right: 14px;
@@ -251,6 +286,25 @@ select {
   min-height: 34px;
   min-width: 34px;
   padding: 0 10px;
+}
+
+.map-zoom-controls button:disabled {
+  color: #9ca49f;
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.map-region-status {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 720;
+  line-height: 1.4;
+  margin: 0 0 10px;
+  padding: 7px 10px;
 }
 
 .chart-box {
@@ -284,6 +338,16 @@ select {
   fill: rgba(255, 255, 255, 0.34);
   stroke: rgba(76, 89, 83, 0.55);
   stroke-width: 0.65;
+  vector-effect: non-scaling-stroke;
+}
+
+.bbox-region {
+  fill: none;
+  opacity: 0.85;
+  stroke: #c62828;
+  stroke-dasharray: 5 4;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
 
@@ -434,6 +498,76 @@ select {
 .summary-stat strong {
   font-size: 18px;
   font-variant-numeric: tabular-nums;
+}
+
+.region-comparison {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 10px;
+}
+
+.comparison-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.comparison-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  padding: 10px 11px;
+}
+
+.comparison-card strong {
+  font-size: 13px;
+}
+
+.comparison-card span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.comparison-table {
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: block;
+  font-size: 12px;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.comparison-table thead,
+.comparison-table tbody,
+.comparison-table tr {
+  width: 100%;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 7px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.comparison-table th {
+  background: #f2f5f0;
+  color: var(--ink);
+  font-weight: 760;
+}
+
+.comparison-table td {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.comparison-table tr:last-child td {
+  border-bottom: 0;
 }
 
 .empty-state {
