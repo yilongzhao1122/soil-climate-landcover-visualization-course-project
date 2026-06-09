@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Integrated SOC-TN Visualization Dashboard</title>
+    <link rel="stylesheet" href="./src/integrated_dashboard.css?v=collapsible-sidebar" />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <p class="eyebrow">Global soil analysis</p>
+          <h1>Integrated SOC-TN Dashboard</h1>
+          <p class="source-note">SOC, TN, C:N, climate space, grouped interval plots, heatmaps, and hierarchy.</p>
+        </div>
+
+        <section class="control-section">
+          <h2>Visualization Category</h2>
+          <label class="field-label" for="categorySelect">Chart Group</label>
+          <select id="categorySelect">
+            <option value="spatial">Spatial Distribution Maps</option>
+            <option value="scatter">Scatter Plots</option>
+            <option value="boxplot">Grouped Interval Plot</option>
+            <option value="heatmap">Heatmaps</option>
+            <option value="hierarchy">Hierarchy Icicle</option>
+          </select>
+        </section>
+
+        <section class="control-section">
+          <h2>Filters</h2>
+          <label class="field-label" for="climateFilter">Climate Zone</label>
+          <select id="climateFilter"></select>
+
+          <label class="field-label" for="landcoverFilter">Land Cover</label>
+          <select id="landcoverFilter"></select>
+
+          <label class="field-label" for="couplingFilter">Coupling Class</label>
+          <select id="couplingFilter"></select>
+          <p class="control-note">Intermediate or Mixed = grid cells not belonging to the four extreme coupling classes. This category includes intermediate SOC or TN levels and other non-corner combinations.</p>
+
+          <label class="check-row">
+            <input id="validOnly" type="checkbox" checked />
+            <span>Valid grid cells only</span>
+          </label>
+
+          <button id="resetFilters" class="secondary-button" type="button">Reset filters</button>
+        </section>
+
+        <section class="control-section panel-controls" data-controls="spatial">
+          <h2>Spatial Map</h2>
+          <label class="field-label" for="mapMetric">Map Layer</label>
+          <select id="mapMetric">
+            <option value="soc_gkg">SOC</option>
+            <option value="tn_gkg">TN</option>
+            <option value="cn_ratio">C:N</option>
+            <option value="coupling_class">Coupling Class</option>
+            <option value="climate_zone">Climate Zone</option>
+          </select>
+        </section>
+
+        <section class="control-section panel-controls" data-controls="scatter" hidden>
+          <h2>Scatter Options</h2>
+          <label class="field-label" for="scatterMode">Scatter Plot</label>
+          <select id="scatterMode">
+            <option value="soc_tn">SOC x TN Relationship</option>
+            <option value="bio_space">BIO1 x BIO12 Climate Space</option>
+          </select>
+
+          <label class="field-label" for="scatterColor">Group / Color</label>
+          <select id="scatterColor">
+            <option value="climate_zone">Climate Zone</option>
+            <option value="landcover_major">Land Cover</option>
+            <option value="coupling_class">Coupling Class</option>
+            <option value="cn_ratio">C:N Ratio</option>
+          </select>
+
+          <label class="field-label" for="axisRange">Axis Range</label>
+          <select id="axisRange">
+            <option value="robust">Robust 1%-99%</option>
+            <option value="full">Full filtered range</option>
+          </select>
+          <p class="control-note">Scatter axes use the 1st-99th percentile range by default to reduce the influence of extreme values.</p>
+        </section>
+
+        <section class="control-section panel-controls" data-controls="boxplot" hidden>
+          <h2>Grouped Interval Options</h2>
+          <label class="field-label" for="boxMetric">Metric</label>
+          <select id="boxMetric">
+            <option value="soc_gkg">SOC</option>
+            <option value="tn_gkg">TN</option>
+            <option value="cn_ratio">C:N</option>
+          </select>
+
+          <label class="field-label" for="boxGroup">Y Axis Group</label>
+          <select id="boxGroup">
+            <option value="climate_zone">Climate Zone</option>
+            <option value="landcover_major">Land Cover</option>
+          </select>
+
+          <label class="check-row">
+            <input id="showErrorRange" type="checkbox" checked />
+            <span>Show q25-q75 interval</span>
+          </label>
+          <p class="control-note">All summary statistics in this panel are area-weighted. q25-q75 represents the IQR, the middle 50% of values in each group.</p>
+        </section>
+
+        <section class="control-section panel-controls" data-controls="heatmap" hidden>
+          <h2>Heatmap Options</h2>
+          <label class="field-label" for="heatMetric">Fill Metric</label>
+          <select id="heatMetric">
+            <option value="weighted_mean_cn_ratio">Weighted Mean C:N</option>
+            <option value="high_soc_low_tn_prop">High SOC / Low TN Proportion</option>
+          </select>
+          <p class="control-note">Weighted Mean C:N responds to all active filters, including coupling class. High SOC / Low TN proportion is area-weighted within each climate x land-cover group and is not conditioned on the coupling-class filter.</p>
+        </section>
+
+        <section class="control-section">
+          <h2>Current Selection</h2>
+          <div id="summaryPanel" class="summary-panel">Loading data...</div>
+        </section>
+
+        <section class="control-section">
+          <h2>Pinned Grid Cell</h2>
+          <div id="detailPanel" class="summary-panel">No grid cell selected.</div>
+        </section>
+
+        <section class="control-section">
+          <h2>Methods & Limits</h2>
+          <p class="control-note">Data sources: SoilGrids SOC and TN mean predictions, WorldClim BIO1/BIO12 1970-2000 climate normals, MODIS MCD12C1 2021 IGBP land cover, and Koppen-Geiger climate classes.</p>
+          <p class="control-note">SOC/TN are 0-30 cm thickness-weighted topsoil values. C:N = SOC / TN. High / medium / low SOC and TN are relative tercile classes from this project dataset.</p>
+          <p class="control-note">Continuous map colors use the global 2nd-98th percentile range to reduce the influence of extreme values. Legend ranges are kept global for cross-filter comparability.</p>
+          <p class="control-note">Current processed data do not include complete cell-level SoilGrids Q0.05-Q0.95 prediction intervals in the dashboard CSV. Therefore, the dashboard displays main SOC/TN predictions but does not show cell-level prediction intervals.</p>
+          <p class="control-note">Uncertainty fields are retained in the dataset but are not used in the main visualizations because SOC/TN uncertainty layers are incomplete or unavailable.</p>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <header class="page-header">
+          <div>
+            <p id="viewKicker" class="eyebrow">Loading</p>
+            <h2 id="viewTitle">Loading Data</h2>
+            <p id="viewSubtitle">Please wait while the CSV and map data load.</p>
+          </div>
+        </header>
+
+        <section id="spatialPanel" class="view-panel">
+          <div class="map-stage">
+            <div id="mapZoomControls" class="map-zoom-controls" aria-label="Map zoom controls">
+              <button id="zoomIn" type="button" title="Zoom in">+</button>
+              <button id="zoomOut" type="button" title="Zoom out">-</button>
+              <button id="resetZoom" type="button">Reset zoom</button>
+            </div>
+            <canvas id="mapCanvas"></canvas>
+            <svg id="mapSvg" aria-hidden="true"><g id="countryLayer"></g></svg>
+            <div id="mapLoading" class="loading-state">Loading map...</div>
+          </div>
+          <div id="mapLegend" class="legend"></div>
+        </section>
+
+        <section id="scatterPanel" class="view-panel" hidden>
+          <div id="scatterChart" class="chart-box"></div>
+          <div id="scatterLegend" class="legend"></div>
+        </section>
+
+        <section id="boxplotPanel" class="view-panel" hidden>
+          <div id="boxplotChart" class="chart-box tall"></div>
+          <div id="boxplotLegend" class="legend"></div>
+        </section>
+
+        <section id="heatmapPanel" class="view-panel" hidden>
+          <div id="heatmapChart" class="chart-box tall"></div>
+          <div id="heatmapLegend" class="legend"></div>
+        </section>
+
+        <section id="hierarchyPanel" class="view-panel" hidden>
+          <div id="hierarchyChart" class="chart-box tall"></div>
+          <div id="hierarchyLegend" class="legend"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="tooltip" class="tooltip" hidden></div>
+    <script src="./src/integrated_dashboard.js?v=collapsible-sidebar"></script>
+  </body>
+</html>

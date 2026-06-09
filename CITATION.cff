@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite it using the metadata below."
+title: "Global Soil Carbon, Nitrogen and Climate-Land Cover Visualization"
+authors:
+  - family-names: Zhao
+    given-names: Yilong
+  - family-names: Cheng
+    given-names: Kaijie
+  - family-names: Wei
+    given-names: Yanhao
+date-released: 2026-06-09
+license: MIT
+abstract: "A static D3 dashboard for visualizing global topsoil SOC, TN, C:N ratio, climate zones, land-cover groups, and SOC-TN coupling classes."

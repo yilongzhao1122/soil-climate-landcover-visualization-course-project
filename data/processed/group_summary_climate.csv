@@ -1,0 +1,7 @@
+group_name,n_cells,weighted_mean_soc_gkg,median_soc_gkg,weighted_mean_tn_gkg,median_tn_gkg,weighted_mean_cn_ratio,median_cn_ratio,q25_cn_ratio,q75_cn_ratio,weighted_mean_soc_uncert,weighted_mean_tn_uncert,weighted_mean_joint_uncert,dominant_coupling_class
+,3,150,148.3,7.701,7.702,19.49,19.52,19.22,19.76,,,,high_soc_high_tn
+Arid,17450,10.66,8.479,1.055,0.9339,10.94,9.352,6.568,11.89,,,,low_soc_low_tn
+Cold,19341,67.31,67.41,3.975,4.097,16.16,16.2,11.92,22.33,,,,high_soc_high_tn
+Polar,6048,79.51,83.38,4.598,4.678,16.33,17.64,14.79,20.06,,,,high_soc_high_tn
+Temperate,5903,27.69,21.98,2.191,1.89,12.44,11.9,10.48,13.68,,,,medium_or_mixed
+Tropical,9245,27.2,18.98,1.737,1.544,14.66,12.38,11.12,14.11,,,,medium_or_mixed

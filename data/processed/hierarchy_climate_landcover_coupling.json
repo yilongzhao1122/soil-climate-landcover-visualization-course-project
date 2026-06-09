@@ -1,0 +1,609 @@
+{
+  "name": "Global",
+  "children": [
+    {
+      "name": "",
+      "children": [
+        {
+          "name": "Snow/Ice",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 0.6536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Arid",
+      "children": [
+        {
+          "name": "Barren",
+          "children": [
+            {
+              "name": "low_soc_high_tn",
+              "value": 7.6488
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 5459.5713
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 668.897
+            }
+          ]
+        },
+        {
+          "name": "Cropland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 1.1826
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 517.5958
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 291.576
+            }
+          ]
+        },
+        {
+          "name": "Forest",
+          "children": [
+            {
+              "name": "medium_or_mixed",
+              "value": 12.1887
+            }
+          ]
+        },
+        {
+          "name": "Grassland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 28.2489
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 2776.6426
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 1966.6227
+            }
+          ]
+        },
+        {
+          "name": "Savanna",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 2.6031
+            },
+            {
+              "name": "high_soc_low_tn",
+              "value": 0.841
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 171.4664
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 99.1393
+            }
+          ]
+        },
+        {
+          "name": "Shrubland",
+          "children": [
+            {
+              "name": "high_soc_low_tn",
+              "value": 17.8891
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 2312.9775
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 550.1152
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cold",
+      "children": [
+        {
+          "name": "Barren",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 0.3543
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 7.5958
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 4.0972
+            }
+          ]
+        },
+        {
+          "name": "Cropland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 123.599
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 135.5636
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 1373.6929
+            }
+          ]
+        },
+        {
+          "name": "Forest",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 1355.0481
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 4.0104
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 1127.0485
+            }
+          ]
+        },
+        {
+          "name": "Grassland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 356.134
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 60.4428
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 802.8029
+            }
+          ]
+        },
+        {
+          "name": "Savanna",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 2473.2546
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 1.5867
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 1199.1409
+            }
+          ]
+        },
+        {
+          "name": "Shrubland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 1213.2463
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 1.7187
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 116.1387
+            }
+          ]
+        },
+        {
+          "name": "Snow/Ice",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 3.5922
+            }
+          ]
+        },
+        {
+          "name": "Urban",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 1.8241
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 3.1509
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 8.7425
+            }
+          ]
+        },
+        {
+          "name": "Wetland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 94.1834
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 2.8546
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Polar",
+      "children": [
+        {
+          "name": "Barren",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 160.1245
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 6.7838
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 155.2735
+            }
+          ]
+        },
+        {
+          "name": "Forest",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 35.4754
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 5.9299
+            }
+          ]
+        },
+        {
+          "name": "Grassland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 857.8903
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 9.3158
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 678.2133
+            }
+          ]
+        },
+        {
+          "name": "Savanna",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 33.3938
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 14.3182
+            }
+          ]
+        },
+        {
+          "name": "Shrubland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 282.9649
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 0.955
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 15.5478
+            }
+          ]
+        },
+        {
+          "name": "Snow/Ice",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 259.7974
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 6.0424
+            }
+          ]
+        },
+        {
+          "name": "Wetland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 4.7125
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Temperate",
+      "children": [
+        {
+          "name": "Barren",
+          "children": [
+            {
+              "name": "low_soc_low_tn",
+              "value": 0.841
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 3.5429
+            }
+          ]
+        },
+        {
+          "name": "Cropland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 13.2024
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 381.7747
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 707.1439
+            }
+          ]
+        },
+        {
+          "name": "Forest",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 181.7061
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 33.6058
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 685.6077
+            }
+          ]
+        },
+        {
+          "name": "Grassland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 49.401
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 337.1921
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 628.0873
+            }
+          ]
+        },
+        {
+          "name": "Savanna",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 99.0234
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 446.1105
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 1340.4639
+            }
+          ]
+        },
+        {
+          "name": "Shrubland",
+          "children": [
+            {
+              "name": "low_soc_low_tn",
+              "value": 14.4811
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 36.1545
+            }
+          ]
+        },
+        {
+          "name": "Urban",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 1.2105
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 1.6768
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 37.7933
+            }
+          ]
+        },
+        {
+          "name": "Wetland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 1.7364
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 0.8363
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tropical",
+      "children": [
+        {
+          "name": "Cropland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 0.893
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 432.5199
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 417.2959
+            }
+          ]
+        },
+        {
+          "name": "Forest",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 163.702
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 259.6143
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 3269.2783
+            }
+          ]
+        },
+        {
+          "name": "Grassland",
+          "children": [
+            {
+              "name": "low_soc_low_tn",
+              "value": 932.8187
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 476.4327
+            }
+          ]
+        },
+        {
+          "name": "Savanna",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 44.025
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 1202.5431
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 1844.2048
+            }
+          ]
+        },
+        {
+          "name": "Shrubland",
+          "children": [
+            {
+              "name": "low_soc_low_tn",
+              "value": 2.8764
+            }
+          ]
+        },
+        {
+          "name": "Urban",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 2.7848
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 2.8876
+            }
+          ]
+        },
+        {
+          "name": "Wetland",
+          "children": [
+            {
+              "name": "high_soc_high_tn",
+              "value": 1.8014
+            },
+            {
+              "name": "low_soc_low_tn",
+              "value": 0.955
+            },
+            {
+              "name": "medium_or_mixed",
+              "value": 14.501
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

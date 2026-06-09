@@ -1,0 +1,10 @@
+{
+  "name": "soil-climate-landcover-visualization",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Static D3 dashboard for global soil carbon, nitrogen, climate, and land-cover visualization.",
+  "scripts": {
+    "serve": "python -m http.server 8765"
+  },
+  "license": "MIT"
+}

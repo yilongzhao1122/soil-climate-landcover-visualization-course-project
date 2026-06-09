@@ -1,0 +1,69 @@
+# Windows and macOS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+renv/library/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+~$*
+*.bak
+*.backup
+
+# Secrets and local configuration
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+*token*
+*cookie*
+
+# Large local-only raw data
+raw_data/
+downloads/
+*.tif
+*.tiff
+*.vrt
+*.shp
+*.dbf
+*.shx
+*.prj
+*.cpg
+*.zip
+*.7z
+*.rar

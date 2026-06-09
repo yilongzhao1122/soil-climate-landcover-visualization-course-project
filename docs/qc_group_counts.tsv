@@ -1,0 +1,21 @@
+field	group	n_cells
+climate_zone	Cold	19341
+climate_zone	Arid	17450
+climate_zone	Tropical	9245
+climate_zone	Polar	6048
+climate_zone	Temperate	5903
+climate_zone		3
+landcover_major	Grassland	13660
+landcover_major	Savanna	12899
+landcover_major	Forest	9101
+landcover_major	Barren	7822
+landcover_major	Shrubland	7515
+landcover_major	Cropland	5660
+landcover_major	Snow/Ice	1027
+landcover_major	Wetland	230
+landcover_major	Urban	76
+coupling_class	medium_or_mixed	23560
+coupling_class	low_soc_low_tn	17227
+coupling_class	high_soc_high_tn	17173
+coupling_class	high_soc_low_tn	22
+coupling_class	low_soc_high_tn	8

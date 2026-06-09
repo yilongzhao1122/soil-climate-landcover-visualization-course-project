@@ -1,0 +1,11 @@
+field	min	max	mean	median
+soc_gkg	0.565	384.1	45.05	25.94
+tn_gkg	0.2349	20.73	2.752	2.213
+cn_ratio	0.8224	123.4	14.48	12.56
+soc_uncert				
+tn_uncert				
+joint_uncert				
+bio1	-24.57	30.48	9.372	9.791
+bio12	0	6971	694.7	487.1
+bio4	0	2342	856.7	824.8
+bio15	0	213.6	63.38	57.56

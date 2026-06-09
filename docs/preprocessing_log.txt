@@ -1,0 +1,26 @@
+Starting preprocessing.
+WARNING: SOC Q0.05/Q0.95 VRT files were detected but local tiles appear incomplete or unreadable; soc_uncert set to NA.
+WARNING: TN Q0.05/Q0.95 files were not detected in local raw_data; tn_uncert and joint_uncert set to NA.
+
+Preprocessing completed.
+
+Main D3 data:
+data/processed/grid_soc_tn_cn_0p5deg.csv
+
+Group summaries:
+data/processed/group_summary_climate.csv
+data/processed/group_summary_landcover.csv
+data/processed/group_summary_climate_landcover.csv
+
+Hierarchy data:
+data/processed/hierarchy_climate_landcover_coupling.json
+
+Map base:
+data/processed/world_countries_110m.geojson
+data/processed/world_countries_110m.topojson, if generated
+
+Documentation:
+data/processed/data_dictionary.md
+data/processed/preprocessing_methods.md
+data/processed/d3_usage_guide.md
+data/processed/qc_summary.md
